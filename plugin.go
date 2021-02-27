@@ -99,7 +99,8 @@ func (p *Plugin) Exec() error {
 	}
 
 	if p.Config.Galaxy != "" {
-		commands = append(commands, p.galaxyCommand())
+		commands = append(commands, p.galaxyCommand("role"))
+		commands = append(commands, p.galaxyCommand("collection"))
 	}
 
 	for _, inventory := range p.Config.Inventories {
@@ -222,8 +223,9 @@ func (p *Plugin) requirementsCommand() *exec.Cmd {
 	)
 }
 
-func (p *Plugin) galaxyCommand() *exec.Cmd {
+func (p *Plugin) galaxyCommand(installType string) *exec.Cmd {
 	args := []string{
+		installType,
 		"install",
 	}
 
@@ -232,7 +234,7 @@ func (p *Plugin) galaxyCommand() *exec.Cmd {
 	}
 
 	args = append(args,
-		"--role-file",
+		"-r",
 		p.Config.Galaxy,
 	)
 
@@ -391,3 +393,4 @@ func (p *Plugin) ansibleCommand(inventory string) *exec.Cmd {
 func trace(cmd *exec.Cmd) {
 	fmt.Println("$", strings.Join(cmd.Args, " "))
 }
+
